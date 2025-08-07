@@ -1,0 +1,119 @@
+Connect your Clickbank account to TrackPlay to automatically track conversions from your video content.
+
+## Overview
+
+The Clickbank integration allows TrackPlay to:
+- Automatically inject tracking parameters into Clickbank purchase links
+- Securely receive encrypted conversion data from Clickbank
+- Provide detailed analytics on video-driven sales
+
+## Setup Instructions
+
+### Step 1: Activate the Integration
+
+1. Go to **Integrations** in your TrackPlay dashboard
+2. Click **Add new integration**
+3. Select **Clickbank** from the available options
+4. Click **Activate**
+
+### Step 2: Configure Integration Settings
+
+The Clickbank integration requires two configuration parameters:
+
+#### Encryption Key
+- **Purpose**: Used to decrypt data sent by Clickbank
+- **Required**: Yes
+- **Security**: This key ensures secure communication between Clickbank and TrackPlay
+
+#### Tracking Parameter
+Choose which Clickbank parameter TrackPlay should use for tracking:
+
+**Available Parameters:**
+- `unique_aff_sub1` - Unique Affiliate Sub 1
+- `unique_aff_sub2` - Unique Affiliate Sub 2
+- `unique_aff_sub3` - Unique Affiliate Sub 3
+- `unique_aff_sub4` - Unique Affiliate Sub 4
+- `unique_aff_sub5` - Unique Affiliate Sub 5
+- `vtid` - Vendor Tracking ID
+
+### Step 3: Save Configuration
+
+1. Enter your Clickbank encryption key
+2. Select your preferred tracking parameter
+3. Click **Update Integration**
+
+### Step 4: Configure Clickbank Postback URLs
+
+Once your integration status shows "Ready to use", you'll see a unique postback URL.
+
+1. Copy the provided postback URL from TrackPlay
+2. Log into your [Clickbank API Management Dashboard](https://accounts.clickbank.com/master/dashboard/api-management)
+3. Navigate to **API Management**
+4. Add the TrackPlay URL to the following fields:
+   - **New Order URL**
+   - **Order Refund URL**
+   - **Order Chargeback URL**
+
+## How It Works
+
+1. **Visitor watches your video** - TrackPlay generates a unique session ID
+2. **Automatic link modification** - All Clickbank links on your page are automatically updated with the tracking parameter
+3. **User makes purchase** - The tracking parameter connects the sale to the video session
+4. **Encrypted data transfer** - Clickbank sends encrypted conversion data to TrackPlay
+5. **Data decryption** - TrackPlay uses your encryption key to securely process the conversion
+6. **Analytics** - View conversion metrics in your TrackPlay dashboard
+
+## Link Modification Examples
+
+TrackPlay automatically modifies Clickbank URLs on your page:
+
+**Links**: URLs containing "clickbank.net"
+- Original: `https://clickbank.net/checkout?vtid=abc123`
+- Modified: `https://clickbank.net/checkout?vtid=trackplay_session_xyz789`
+
+**Forms**: Form actions pointing to "clickbank.net"
+- TrackPlay also updates form action URLs with the tracking parameter
+
+## Security Features
+
+- **Encryption**: All conversion data is encrypted using your unique encryption key
+- **Secure URLs**: Postback URLs contain unique codes that prevent unauthorized access
+- **Parameter Override**: TrackPlay safely overrides tracking parameters without affecting other URL components
+
+## Troubleshooting
+
+### Integration Status: "Not Ready; Information Required"
+- Ensure you've entered a valid encryption key
+- Select a tracking parameter from the dropdown
+- Click "Update Integration" to save changes
+
+### No Conversions Showing
+- Verify the postback URL is correctly configured in Clickbank
+- Check that your encryption key matches the one in Clickbank
+- Ensure Clickbank links are present on pages with TrackPlay videos
+- Confirm the integration status shows "Ready to use"
+
+### Links Not Being Modified
+- Verify your links contain "clickbank.net" in the URL
+- Check that the TrackPlay video player has fully loaded
+- Ensure the integration is active and configured
+
+### Decryption Errors
+- Double-check your encryption key in both TrackPlay and Clickbank
+- Ensure the key was copied correctly without extra spaces
+- Contact Clickbank support if you need to regenerate your encryption key
+
+## Best Practices
+
+1. **Secure Key Management**: Keep your encryption key confidential
+2. **Test Purchases**: Make test purchases to verify tracking is working
+3. **Monitor Status**: Regularly check that your integration status remains "Ready to use"
+4. **URL Verification**: Ensure your Clickbank links are properly formatted
+
+## Support
+
+If you're experiencing issues with your Clickbank integration, contact TrackPlay support with:
+- Your workspace ID
+- Integration configuration details (do not share encryption keys)
+- Example URLs that should be tracked
+- Any error messages from Clickbank

@@ -1,0 +1,213 @@
+---
+title: "Timed Events"
+description: "Reference for custom timed events configured in your dashboard"
+---
+
+Custom events that fire at specific times during video playback. **All event names are completely custom and defined by you** in your TrackPlay dashboard.
+
+<Note>
+Need to integrate events? See the [Quick Start Guide](/get-started/quick-start) for the basic integration pattern.
+</Note>
+
+## How Timed Events Work
+
+Timed events are completely custom events that you configure in your TrackPlay dashboard. You define:
+- **Event name** (any name you choose - e.g., "cta", "offer", "milestone")
+- **Trigger time** (specific time or percentage)
+- **Call frequency** (once per session or multiple times)
+- **Returning user behavior** (different events for subsequent visits)
+
+<Warning>
+**Important**: You must use the exact event name you configured in your dashboard settings. The examples below are just illustrations - replace them with your actual event names.
+</Warning>
+
+## Event Structure
+
+All timed events follow this data structure:
+
+```javascript
+{
+  time: 45.2,           // Time when event was triggered (seconds)
+  percentage: 25.1,     // Percentage of video completed  
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+## Example Custom Events
+
+Here are example event names you might configure (remember, you choose the names):
+
+### Call-to-Action Example
+
+**Event:** `cta` (you define this name in dashboard settings)
+
+**Data:**
+```javascript
+{
+  time: 30.0,           // Time when event was triggered (seconds)
+  percentage: 16.7,     // Percentage of video completed  
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+```javascript
+player.on('cta', function (event) {
+  console.log('CTA event fired at', event.detail.time);
+  console.log('Video completion:', event.detail.percentage + '%');
+  showCallToAction();
+});
+```
+
+### Offer Example
+
+**Event:** `offer` (you define this name in dashboard settings)
+
+**Data:**
+```javascript
+{
+  time: 90.0,           // Time when event was triggered (seconds)
+  percentage: 50.0,     // Percentage of video completed  
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+```javascript
+player.on('offer', function (event) {
+  console.log('Offer event fired at', event.detail.time);
+  showSpecialOffer();
+});
+```
+
+### Milestone Example
+
+**Event:** `milestone` (you define this name in dashboard settings)
+
+**Data:**
+```javascript
+{
+  time: 60.0,           // Time when event was triggered (seconds)
+  percentage: 33.3,     // Percentage of video completed  
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+```javascript
+player.on('milestone', function (event) {
+  console.log('Milestone reached at', event.detail.time);
+  trackEngagement('milestone_reached');
+});
+```
+
+## Subsequent Visit Events
+
+If you enable the subsequent visit toggle, you'll get an extra event like `cta_subsequent` which will fire on every subsequent visit (for returning visitors).
+This is useful to automatically show CTA containers for returning 
+
+**Event:** `cta` (first-time visitors)
+
+**Data:**
+```javascript
+{
+  time: 30.0,           // Time when event was triggered (seconds)
+  percentage: 16.7,     // Percentage of video completed  
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+```javascript
+player.on('cta', function (event) {
+  console.log('First-time visitor CTA');
+  showFirstTimeCTA();
+});
+```
+
+**Event:** `cta_subsequent` (returning visitors - automatically generated)
+
+**Data:**
+```javascript
+{
+  time: 30.0,           // Time when event was triggered (seconds)
+  percentage: 16.7,     // Percentage of video completed  
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+```javascript
+player.on('cta_subsequent', function (event) {
+  console.log('Returning visitor CTA');
+  showReturningVisitorCTA();
+});
+```
+
+## Complete Integration Example
+
+```javascript
+document.addEventListener('TrackPlayReady', function (e) {
+  let player = e.detail.player;
+  
+  // Listen to YOUR custom timed events (replace with your actual event names)
+  player.on('cta', function (event) {
+    console.log('CTA event fired at', event.detail.time);
+    showCallToAction();
+  });
+  
+  player.on('offer', function (event) {
+    console.log('Offer event fired at', event.detail.percentage + '%');
+    showSpecialOffer();
+  });
+  
+  player.on('milestone', function (event) {
+    console.log('Milestone reached');
+    trackEngagement('milestone_reached');
+  });
+  
+  // Handle returning user events if configured
+  player.on('cta_subsequent', function (event) {
+    console.log('Returning visitor CTA');
+    showReturningVisitorCTA();
+  });
+});
+```
+
+## Event Configuration Options
+
+When configuring timed events in your dashboard, you can set:
+
+### Event Name
+- **Choose any name**: "cta", "offer", "milestone", "chapter1", "signup", etc.
+- **Use descriptive names**: Choose names that clearly indicate their purpose
+- **Keep it simple**: Avoid spaces and special characters
+
+### Trigger Timing
+- **Specific time**: "Fire at 1:30 into the video"
+- **Percentage**: "Fire at 25% completion"
+
+### Call Frequency
+- **Call once**: Event fires only once per session
+- **Call multiple times**: Event fires every time the trigger point is reached
+
+### Returning User Behavior
+- **Same event**: Returning users get the same event
+- **Different event**: Returning users get a `_subsequent` version of the event
+
+## Data Structure
+
+All timed events include these fields:
+
+- **`time`**: Time when event was triggered (seconds)
+- **`percentage`**: Percentage of video completed when triggered
+- **`session_id`**: Unique device/session identifier
+
+## Best Practices
+
+1. **Use descriptive names**: Choose event names that clearly indicate their purpose
+2. **Plan your timing**: Consider the user experience when setting trigger times
+3. **Handle gracefully**: Always check if elements exist before manipulating them
+4. **Test both scenarios**: Test both first-time and returning user flows
+5. **Use event data**: Leverage the time and percentage data for better tracking
+
+## Related Events
+
+- **[Video Events](/events/video-events)** - Core playback events
+- **[User Events](/events/user-events)** - Interface interaction events
+- **[Pixel Events](/events/pixel-events)** - Conversion tracking events

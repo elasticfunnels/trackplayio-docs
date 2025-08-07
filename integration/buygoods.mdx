@@ -1,0 +1,86 @@
+Connect your Buygoods account to TrackPlay to automatically track conversions from your video content.
+
+## Overview
+
+The Buygoods integration allows TrackPlay to:
+- Automatically inject tracking parameters into Buygoods purchase links
+- Capture conversion data when purchases are completed
+- Provide detailed analytics on video-driven sales
+
+## Setup Instructions
+
+### Step 1: Activate the Integration
+
+1. Go to **Integrations** in your TrackPlay dashboard
+2. Click **Add new integration** 
+3. Select **Buygoods** from the available options
+4. Click **Activate**
+
+### Step 2: Configure Tracking Parameters
+
+Choose which parameter TrackPlay should use to track conversions:
+
+**Available Parameters:**
+- `subid_1` - Subid 1
+- `subid_2` - Subid 2  
+- `subid_3` - Subid 3
+- `vid1` - Vendor ID 1
+- `vid2` - Vendor ID 2
+- `vid3` - Vendor ID 3
+
+1. Select your preferred tracking parameter from the dropdown
+2. Click **Update Integration**
+
+### Step 3: Configure Buygoods Postback URLs
+
+Once your integration is ready, you'll see a unique postback URL. This URL needs to be added to your Buygoods product settings.
+
+1. Copy the provided postback URL from TrackPlay
+2. Log into your [Buygoods Admin Panel](https://admin.buygoods.com/#products-settings)
+3. Navigate to **Product Settings**
+4. Add the TrackPlay URL to the following fields:
+   - **New Order URL**
+   - **Order Refund URL** 
+   - **Order Chargeback URL**
+
+## How It Works
+
+1. **Visitor watches your video** - TrackPlay generates a unique session ID
+2. **Automatic link modification** - All Buygoods links on your page are automatically updated with the tracking parameter
+3. **User makes purchase** - The tracking parameter connects the sale to the video session
+4. **Conversion tracking** - Buygoods sends conversion data to TrackPlay via the postback URL
+5. **Analytics** - View conversion metrics in your TrackPlay dashboard
+
+## Tracking Parameters Explained
+
+TrackPlay will automatically override your chosen parameter on all Buygoods URLs with the visitor's unique session ID. For example:
+
+- Original URL: `https://buygoods.com/checkout?subid_1=abc123`
+- Modified URL: `https://buygoods.com/checkout?subid_1=trackplay_session_xyz789`
+
+## Security Note
+
+⚠️ **Important**: Do not share your postback URL with anyone except the Buygoods team. This URL contains sensitive integration data.
+
+## Troubleshooting
+
+### Integration Status: "Not Ready"
+- Ensure you've selected a tracking parameter
+- Click "Update Integration" to save your settings
+
+### No Conversions Showing
+- Verify the postback URL is correctly set in Buygoods
+- Check that your Buygoods links are present on the page with your TrackPlay video
+- Ensure the integration status shows "Ready to use"
+
+### Links Not Being Modified
+- Confirm your Buygoods links contain "buygoods.com" in the URL
+- Check that the TrackPlay video player has fully loaded
+- Verify the integration is active and properly configured
+
+## Support
+
+If you're experiencing issues with your Buygoods integration, contact TrackPlay support with:
+- Your workspace ID
+- Integration configuration details
+- Example URLs that should be tracked

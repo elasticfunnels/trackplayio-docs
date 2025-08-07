@@ -1,0 +1,276 @@
+---
+title: "Player Options"
+description: "Configuration options that affect player behavior and available features"
+---
+
+TrackPlay offers extensive customization options configured through your dashboard. Understanding these options helps you build integrations that work with any player configuration.
+
+<Note>
+Looking for integration code? See the [Quick Start Guide](/get-started/quick-start) for the basic integration pattern.
+</Note>
+
+## Visual & Controls
+
+### Autoplay Settings
+Controls how videos start playing automatically.
+
+**Available Options:**
+- **Autoplay enabled/disabled**
+- **Custom autoplay video** (different preview video)
+- **Autoplay time range** (specific start/end times)
+- **Pulsating effects** during autoplay
+- **Custom autoplay templates** with HTML/CSS
+
+**Impact on Integration:**
+- When enabled, videos may start playing immediately
+- `play` event may fire automatically on page load
+- Continue watching takes precedence over autoplay for returning users
+
+### Thumbnail Images
+Custom thumbnail images displayed when autoplay is disabled or video is paused.
+
+**Available Options:**
+- **Landscape thumbnail** (for desktop/wide screens)
+- **Portrait thumbnail** (for mobile/narrow screens)
+- **Orientation-aware display** (shows appropriate thumbnail based on video orientation)
+- **Draggable positioning** with visual canvas editor
+- **Custom image uploads** to BunnyCDN storage
+
+**Configuration Process:**
+1. Navigate to the **Thumbnail** tab in video customization
+2. Upload separate images for landscape and portrait orientations
+3. Use the visual canvas editor to position thumbnails precisely
+4. Deploy changes to make thumbnails live
+
+**Impact on Integration:**
+- Thumbnails display when `autoplay` is disabled and video hasn't started
+- Automatically adapts to video orientation (landscape/portrait)
+- `thumbnail` overlay can be triggered programmatically
+- Works seamlessly with continue watching and pause menu features
+
+**Technical Details:**
+- Supports JPEG, PNG, GIF, and WebP formats (up to 10MB)
+- Images are uploaded to workspace-specific CDN folders
+- URLs are stored in `thumbnail_options.landscape_image` and `thumbnail_options.portrait_image`
+- Positioning data stored in overlay configuration for canvas editor
+
+### Style & Appearance
+Customizes the visual appearance of the player.
+
+**Available Options:**
+- **Main color** (primary brand color)
+- **Background color** (player background)
+- **Controls bar style** (default vs. solid)
+- **Control visibility** (show/hide individual controls)
+
+**Control Options:**
+- Center play button
+- Corner play button
+- Classic progress bar
+- Video time display
+- Rewind/forward buttons
+- Fullscreen button
+- Settings button (speed controls)
+- **Play in fullscreen** (auto-fullscreen mode)
+
+**Impact on Integration:**
+- Available controls affect which user interactions are possible
+- Auto-fullscreen mode triggers `fullscreen` event immediately
+- Control visibility affects user experience and event frequency
+
+### Progress Bar
+Customizes how video progress is displayed.
+
+**Available Options:**
+- **Smart progress** (non-linear progress display)
+- **Progress bar colors** and styling
+- **Height and background** customization
+- **Classic vs. modern** progress bar styles
+
+**Impact on Integration:**
+- Progress visualization affects user engagement
+- Smart progress may show different completion percentages
+- Custom styling doesn't affect `time` event data
+
+## Functional Features
+
+### Continue Watching
+Allows users to resume videos from where they left off.
+
+**Configuration Options:**
+- **Enable/disable** continue watching
+- **Minimum watch time** threshold (how long before it's considered "watched")
+- **Custom templates** for continue watching overlay
+- **Continue/restart button** styling and behavior
+
+**Impact on Integration:**
+- `continue-watching` event fires when overlay is shown
+- Minimum watch time determines when feature activates
+- Only works for returning users who meet watch time threshold
+
+### Smart Orientation
+Automatically detects and responds to video orientation.
+
+**Configuration Options:**
+- **Enable/disable** smart orientation
+- **Orientation-specific** styling and behavior
+- **Automatic layout** adjustments
+
+**Impact on Integration:**
+- `portrait` and `landscape` events fire based on video dimensions
+- Affects responsive design requirements
+- May trigger layout changes automatically
+
+### Captions & Overlays
+Manages text overlays and paused state content.
+
+**Configuration Options:**
+- **Caption display** and styling
+- **Custom paused overlays** with HTML/CSS
+- **Overlay positioning** and timing
+- **Text styling** and colors
+
+**Impact on Integration:**
+- Custom overlays may affect user interactions
+- Paused overlays can include interactive elements
+- Overlay events may be available depending on configuration
+
+## Advanced Features
+
+### Turbo Mode
+Optimizes video loading and playback performance.
+
+**Configuration Options:**
+- **Enable/disable** turbo mode
+- **Preloading strategies**
+- **Bandwidth optimization**
+
+**Impact on Integration:**
+- May affect `metadata` event timing
+- Can influence video loading speed
+- Affects user experience but not event data
+
+### Playback Controls
+Fine-tunes video playback behavior.
+
+**Configuration Options:**
+- **Default playback speed**
+- **Available speed options**
+- **Skip intervals** (rewind/forward amounts)
+- **Playback shortcuts** and hotkeys
+
+**Impact on Integration:**
+- Speed changes affect playback timing
+- Skip intervals affect user interaction patterns
+- Shortcuts may trigger playback events
+
+## Event-Related Configuration
+
+### Timed Events
+Custom events that fire at specific times.
+
+**Configuration Impact:**
+- **Event names** are completely custom
+- **Trigger timing** can be time-based or percentage-based
+- **Call frequency** affects how often events fire
+- **Subsequent visits** may have different event names
+
+**Integration Considerations:**
+- Event names must match your JavaScript listeners
+- Timing precision depends on video playback
+- Session-based events require proper handling
+
+### Conversion Pixels
+Third-party tracking integration.
+
+**Configuration Impact:**
+- **Pixel types** determine event naming convention
+- **Trigger conditions** affect when pixel events fire
+- **Session limits** control firing frequency
+- **Custom pixels** can execute arbitrary JavaScript
+
+**Integration Considerations:**
+- Pixel events complement your existing tracking
+- Event naming follows predictable patterns
+- Session limits prevent pixel spam
+
+### User Event Tracking
+Tracks user interactions with the page.
+
+**Configuration Options:**
+- **Content engagement tracking** (scroll, hover, click)
+- **Targeted elements only** (data-trackplay attributes)
+- **Interaction sensitivity** settings
+
+**Impact on Integration:**
+- These interactions are tracked automatically
+- Not available as player events (they're tracked separately)
+- Use `data-trackplay` attributes for targeted tracking
+
+## Configuration Dependencies
+
+Some features interact with each other:
+
+### Autoplay + Continue Watching
+- Continue watching **overrides** autoplay for returning users
+- Autoplay settings apply to first-time visitors
+- Both features can be enabled simultaneously
+
+### Fullscreen + Style
+- Fullscreen behavior depends on control visibility
+- Auto-fullscreen mode requires fullscreen button to be enabled
+- Style settings affect fullscreen appearance
+
+### Timed Events + Pixels
+- Both can trigger at the same time points
+- Pixels fire independently of timed events
+- Session limits apply to both separately
+
+### User Tracking + Targeted Elements
+- When targeted elements is enabled, only `data-trackplay` elements are tracked
+- General content engagement tracking is disabled
+- Affects what interactions are monitored
+
+## Best Practices for Integration
+
+### Handle Configuration Variations
+Your integration should work regardless of configuration:
+
+```javascript
+// Example: Handle optional features gracefully
+document.addEventListener('TrackPlayReady', function (e) {
+  let player = e.detail.player;
+  
+  // Always handle core events
+  player.on('play', handlePlay);
+  player.on('paused', handlePaused);
+  
+  // Handle optional events that may not exist
+  player.on('continue-watching', handleContinueWatching);
+  player.on('fullscreen', handleFullscreen);
+  
+  // Handle custom events (these are configuration-dependent)
+  player.on('show_cta', handleCTA);
+  player.on('special_offer', handleOffer);
+});
+```
+
+### Test Different Scenarios
+- Test with different control configurations
+- Verify behavior with autoplay enabled/disabled
+- Check continue watching with various minimum watch times
+- Test fullscreen behavior with different style settings
+
+### Responsive Design
+- Handle both portrait and landscape orientations
+- Prepare for auto-fullscreen mode
+- Design for different control bar styles
+- Consider various progress bar configurations
+
+## Related Documentation
+
+- **[Event Setup](/configuration/event-setup)** - Configuring timed events and pixels
+- **[Templates & Styling](/configuration/templates-styling)** - Customizing appearance
+- **[Video Events](/events/video-events)** - Core playback events
+- **[User Events](/events/user-events)** - Interface interaction events
+

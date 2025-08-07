@@ -1,0 +1,257 @@
+---
+title: "Video Events"
+description: "Reference for all video playback events"
+---
+
+# Video Events
+
+Core video playback events that track the video's state and progress.
+
+<Note>
+Need to integrate events? See the [Quick Start Guide](/get-started/quick-start) for the basic integration pattern.
+</Note>
+
+## Playback Events
+
+### `play`
+Fired when video starts playing.
+
+**Data:**
+```javascript
+{
+  time: 45.2,        // Current playback time in seconds
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('play', function (event) {
+  console.log('Video started at', event.detail.time);
+});
+```
+
+### `paused`
+Fired when video is paused.
+
+**Data:**
+```javascript
+{
+  time: 45.2,        // Time when video was paused
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('paused', function (event) {
+  console.log('Video paused at', event.detail.time);
+});
+```
+
+### `ended`
+Fired when video playback reaches the end.
+
+**Data:**
+```javascript
+{
+  time: 180.5,       // Final playback time
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('ended', function (event) {
+  console.log('Video completed at', event.detail.time);
+});
+```
+
+### `time`
+Fired continuously during playback to track progress.
+
+**Data:**
+```javascript
+{
+  time: 67.8,        // Current playback time in seconds
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('time', function (event) {
+  console.log('Current time:', event.detail.time);
+});
+```
+
+**Frequency:** Fired during active playback when video is unmuted and not paused.
+
+## Orientation Events
+
+### `portrait`
+Fired when video orientation changes to portrait.
+
+**Data:**
+```javascript
+{
+  time: 12.3,        // Current playback time
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('portrait', function (event) {
+  document.body.classList.add('video-portrait');
+});
+```
+
+### `landscape`
+Fired when video orientation changes to landscape.
+
+**Data:**
+```javascript
+{
+  time: 12.3,        // Current playback time
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('landscape', function (event) {
+  document.body.classList.remove('video-portrait');
+});
+```
+
+## User Interaction Events
+
+### `interact`
+Fired when user first interacts with the player.
+
+**Data:**
+```javascript
+{
+  time: 5.1,         // Current playback time
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('interact', function (event) {
+  console.log('User first interacted at', event.detail.time);
+  // Enable additional features after interaction
+  enableAdvancedControls();
+});
+```
+
+### `enter-fullscreen`
+Fired when video enters fullscreen mode.
+
+**Data:**
+```javascript
+{
+  time: 30.2,        // Current playback time
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('enter-fullscreen', function (event) {
+  console.log('Entered fullscreen at', event.detail.time);
+  // Hide elements that shouldn't show in fullscreen
+  document.querySelectorAll('.hide-on-fullscreen').forEach(el => {
+    el.style.display = 'none';
+  });
+});
+```
+
+### `exit-fullscreen`
+Fired when video exits fullscreen mode.
+
+**Data:**
+```javascript
+{
+  time: 45.8,        // Current playback time
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('exit-fullscreen', function (event) {
+  console.log('Exited fullscreen at', event.detail.time);
+  // Restore hidden elements
+  document.querySelectorAll('.hide-on-fullscreen').forEach(el => {
+    el.style.removeProperty('display');
+  });
+});
+```
+
+## Overlay Events
+
+### `continue-watching`
+Fired when the continue watching overlay is displayed for returning users.
+
+**Data:**
+```javascript
+{
+  time: 67.3,        // Time when overlay was shown
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('continue-watching', function (event) {
+  console.log('Continue watching overlay shown at', event.detail.time);
+  // Track that user saw continue watching option
+  analytics.track('continue_watching_shown', {
+    video_time: event.detail.time
+  });
+});
+```
+
+## Complete Integration Example
+
+```javascript
+document.addEventListener('TrackPlayReady', function (e) {
+  let player = e.detail.player;
+  
+  // Listen to all video events
+  player.on('play', function (event) {
+    console.log('Video started at', event.detail.time);
+  });
+  
+  player.on('paused', function (event) {
+    console.log('Video paused at', event.detail.time);
+  });
+  
+  player.on('ended', function (event) {
+    console.log('Video completed at', event.detail.time);
+  });
+  
+  player.on('time', function (event) {
+    console.log('Current time:', event.detail.time);
+  });
+  
+  player.on('enter-fullscreen', function (event) {
+    console.log('Entered fullscreen at', event.detail.time);
+  });
+  
+  player.on('exit-fullscreen', function (event) {
+    console.log('Exited fullscreen at', event.detail.time);
+  });
+  
+  // Overlay events
+  player.on('continue-watching', function (event) {
+    console.log('Continue watching overlay shown at', event.detail.time);
+  });
+});
+```
+
+## Data Structure
+
+All video events include these standard fields:
+
+- **`time`**: Current video playback time in seconds
+- **`session_id`**: Unique device/session identifier
+
+## Related Events
+
+- **[Timed Events](/events/timed-events)** - Custom events at specific times
+- **[User Events](/events/user-events)** - Interface interaction events  
+- **[Pixel Events](/events/pixel-events)** - Conversion tracking events

@@ -1,0 +1,143 @@
+---
+title: "Quick Start"
+description: "Get started with TrackPlay player integration in minutes"
+---
+
+Get your TrackPlay player up and running in just a few steps.
+
+## Basic Integration
+
+### 1. Add the Embed Script
+
+To get your embed script, you'll need to go to your TrackPlay dashboard, select the video you want and then go to `Embed` section.
+
+You will get a code similar to this:
+
+```html
+<div class="video" id="[unique-video-id]"
+     style="position:relative;width:100%;padding: 125.0% 0 0;margin:0 auto;">
+    <picture style="position:absolute;top:0;left:0;width:100%;height:100%;">
+        
+        <source srcset="https://scripts.trackplay.io/[unique-video-id]/landscape.jpg" >
+        <img src="about:blank" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;">
+    </picture>
+    <div style="position:absolute;top:0;width:100%;height:100%;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(5px);"></div>
+</div>
+
+<script type="text/javascript">
+    let trackplay = document.createElement('script');
+    trackplay.src = 'https://scripts.trackplay.io/[workspace-id]/[unique-video-id].js';
+    trackplay.async = !0, document.head.appendChild(trackplay);
+
+    document.addEventListener('TrackPlayReady', function (e) {
+        let player = e.detail.player;
+        
+        player.on('scroll_cta', () => {
+            // handle scroll_cta, called at 00:34:04
+        });
+
+        player.on('show_cta', () => {
+            // handle show_cta, called at 00:34:04
+        });
+
+        player.on('show_cta_subsequent', () => {
+            // handle show_cta, called at 00:34:04
+            // called at every subsequent visit if the event is already triggered
+        });
+
+    });
+</script>
+```
+
+### 2. Listen for Player Ready
+
+The TrackPlay script automatically initializes the player and dispatches a `TrackPlayReady` event when it's ready to use:
+
+```javascript
+document.addEventListener('TrackPlayReady', function (e) {
+  let player = e.detail.player;
+  
+  console.log('TrackPlay player is ready!');
+  
+  // Now you can listen to any player events
+  player.on('eventName', function (data) {
+    console.log('Event triggered:', data);
+    // Your custom logic here
+  });
+});
+```
+
+## Core Event Pattern
+
+All TrackPlay events follow this pattern:
+
+```javascript
+document.addEventListener('TrackPlayReady', function (e) {
+  let player = e.detail.player;
+  
+  // Listen to events
+  player.on('eventName', function (data) {
+    // Event data is available in data.detail
+    console.log('Event data:', data.detail);
+  });
+});
+```
+
+## Common Events
+
+Here are the most commonly used events:
+
+```javascript
+document.addEventListener('TrackPlayReady', function (e) {
+  let player = e.detail.player;
+  
+  // Video playback events
+  player.on('play', function (data) {
+    console.log('Video started playing');
+  });
+  
+  player.on('paused', function (data) {
+    console.log('Video paused');
+  });
+  
+  player.on('ended', function (data) {
+    console.log('Video ended');
+  });
+  
+  // Progress tracking
+  player.on('time', function (data) {
+    console.log('Current time:', data.detail.time);
+    console.log('Duration:', data.detail.duration);
+  });
+  
+  // Orientation changes
+  player.on('portrait', function (data) {
+    console.log('Video is in portrait mode');
+  });
+  
+  player.on('landscape', function (data) {
+    console.log('Video is in landscape mode');
+  });
+  
+  // Overlay events
+  player.on('continue-watching', function (data) {
+    console.log('Continue watching overlay shown');
+  });
+});
+```
+
+## Important Notes
+
+- **Always wait for `TrackPlayReady`** - Don't try to access the player before this event fires
+- **Event data is in `data.detail`** - All event information is nested under the `detail` property
+- **One listener per page** - You only need one `TrackPlayReady` event listener per page
+- **Events are configurable** - Available events depend on your player configuration
+
+<Note>
+The TrackPlay embed script handles all the heavy lifting - player initialization, responsive sizing, and cross-browser compatibility. You just need to listen for the events you care about!
+</Note>
+
+
+
+
+

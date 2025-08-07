@@ -1,0 +1,207 @@
+---
+title: "Pixel Events"
+description: "Reference for conversion tracking pixel events"
+---
+
+Events that fire when conversion tracking pixels are triggered based on video engagement. These events correspond to Facebook pixels, Google pixels, and custom tracking pixels configured in your dashboard.
+
+<Note>
+Need to integrate events? See the [Quick Start Guide](/get-started/quick-start) for the basic integration pattern.
+</Note>
+
+## How Pixel Events Work
+
+Pixel events are generated when:
+1. **Tracking pixels are configured** in your TrackPlay dashboard
+2. **Trigger conditions are met** (specific time or percentage)
+3. **Session rules are satisfied** (call once vs. multiple times)
+
+Each pixel configuration creates a corresponding event that you can listen to.
+
+## Event Naming Convention
+
+Pixel events follow this naming pattern based on the actual code:
+- **Facebook pixels**: `pixel_event_{FB_ID}`
+- **Google pixels**: `pixel_event_{GOOGLE_ID}`
+- **Custom pixels**: `pixel_event_{CONTENT_HASH}`
+
+## Event Data Structure
+
+All pixel events share this data structure:
+
+```javascript
+{
+  time: 45.2,           // Time when pixel was triggered (seconds)
+  percentage: 25.1,     // Percentage of video completed
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+## Facebook Pixel Events
+
+### Configuration
+Facebook pixels are configured with:
+- **Facebook Pixel ID** (e.g., "123456789")
+- **Trigger timing** (time or percentage)
+- **Call frequency** (once per session or multiple times)
+
+**Event:** `pixel_event_123456789`
+
+**Data:**
+```javascript
+{
+  time: 45.2,           // Time when pixel was triggered (seconds)
+  percentage: 25.1,     // Percentage of video completed
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+```javascript
+player.on('pixel_event_123456789', function (event) {
+  console.log('Facebook pixel fired:', event.detail);
+  console.log('Triggered at:', event.detail.time + ' seconds');
+  console.log('Video completion:', event.detail.percentage + '%');
+  
+  // Custom conversion tracking
+  gtag('event', 'video_conversion', {
+    'pixel_type': 'facebook',
+    'pixel_id': '123456789',
+    'trigger_time': event.detail.time
+  });
+});
+```
+
+## Google Pixel Events
+
+### Configuration
+Google pixels are configured with:
+- **Google Ads ID** (e.g., "AW-987654321")
+- **Conversion Label** (e.g., "abc123")
+- **Trigger timing** (time or percentage)
+- **Call frequency** (once per session or multiple times)
+
+**Event:** `pixel_event_AW-987654321`
+
+**Data:**
+```javascript
+{
+  time: 45.2,           // Time when pixel was triggered (seconds)
+  percentage: 25.1,     // Percentage of video completed
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+```javascript
+player.on('pixel_event_AW-987654321', function (event) {
+  console.log('Google pixel fired:', event.detail);
+  
+  // Additional conversion tracking
+  gtag('event', 'conversion', {
+    'send_to': 'AW-987654321/abc123',
+    'value': 1.0,
+    'currency': 'USD',
+    'custom_parameters': {
+      'video_time': event.detail.time,
+      'video_percentage': event.detail.percentage
+    }
+  });
+});
+```
+
+## Custom Pixel Events
+
+### Configuration
+Custom pixels are configured with:
+- **Custom HTML/JavaScript code** to execute
+- **Trigger timing** (time or percentage)
+- **Call frequency** (once per session or multiple times)
+
+**Event:** `pixel_event_custom_lead_gen`
+
+**Data:**
+```javascript
+{
+  time: 45.2,           // Time when pixel was triggered (seconds)
+  percentage: 25.1,     // Percentage of video completed
+  session_id: "abc123"  // Device/session identifier
+}
+```
+
+```javascript
+player.on('pixel_event_custom_lead_gen', function (event) {
+  console.log('Custom pixel fired:', event.detail);
+  
+  // Your custom conversion logic
+  sendLeadToWebhook({
+    email: getCurrentUserEmail(),
+    videoId: 'your-video-id',
+    engagement: event.detail.percentage,
+    timestamp: new Date().toISOString(),
+    trigger_time: event.detail.time
+  });
+  
+  // Show conversion message
+  if (event.detail.percentage > 75) {
+    showConversionOffer();
+  }
+});
+```
+
+## Complete Integration Example
+
+```javascript
+document.addEventListener('TrackPlayReady', function (e) {
+  let player = e.detail.player;
+  
+  // Listen to pixel events
+  player.on('pixel_event_123456789', function (event) {
+    console.log('Facebook pixel fired at', event.detail.time);
+    gtag('event', 'video_conversion', {
+      'pixel_type': 'facebook',
+      'trigger_time': event.detail.time
+    });
+  });
+  
+  player.on('pixel_event_AW-987654321', function (event) {
+    console.log('Google pixel fired at', event.detail.time);
+    gtag('event', 'conversion', {
+      'send_to': 'AW-987654321/abc123',
+      'value': 1.0
+    });
+  });
+  
+  player.on('pixel_event_custom_lead_gen', function (event) {
+    console.log('Custom pixel fired at', event.detail.time);
+    sendLeadToWebhook({
+      engagement: event.detail.percentage,
+      trigger_time: event.detail.time
+    });
+  });
+});
+```
+
+
+
+## Data Structure
+
+All pixel events include these fields:
+
+- **`time`**: Time when pixel was triggered (seconds)
+- **`percentage`**: Percentage of video completed when triggered
+- **`session_id`**: Unique device/session identifier
+
+## Related Events
+
+- **[Video Events](/events/video-events)** - Core playback events
+- **[Timed Events](/events/timed-events)** - Custom events at specific times
+- **[User Events](/events/user-events)** - Interface interaction events
+
+## Configuration
+
+To set up pixel events:
+
+1. **Configure pixels** in your TrackPlay dashboard
+2. **Set trigger conditions** (time or percentage)
+3. **Choose call frequency** (once per session or multiple times)
+4. **Test pixel firing** in browser developer tools
+5. **Listen for events** in your JavaScript code

@@ -1,0 +1,207 @@
+This guide explains how TrackPlay's conversion tracking system works and how to optimize it for maximum accuracy.
+
+## How Conversion Tracking Works
+
+TrackPlay uses a sophisticated tracking system to connect video views with actual purchases:
+
+### 1. Session Generation
+- Each video viewer gets a unique session ID
+- Session IDs are automatically generated when the video player loads
+- Sessions persist across page navigation and browser sessions
+
+### 2. Link Modification
+TrackPlay automatically modifies purchase links on your page:
+- **Clickbank links**: URLs containing "clickbank.net"
+- **Buygoods links**: URLs containing "buygoods.com"
+- **Form actions**: Purchase forms are also updated with tracking parameters
+
+### 3. Parameter Injection
+- The system injects the session ID into your chosen tracking parameter
+- This happens automatically for links and forms
+- Original parameter values are safely replaced with session tracking data
+
+### 4. Conversion Capture
+- When users complete purchases, payment processors send data to TrackPlay
+- Conversion data is matched to the original video session
+- Multiple conversion types are tracked (sales, refunds, chargebacks)
+
+## Automatic Link Detection
+
+TrackPlay scans your page for purchase links when:
+- The page finishes loading (`load` event)
+- Browser navigation occurs (`popstate` event)  
+- 1 second after page load (fallback timer)
+
+This ensures tracking works even with dynamically loaded content.
+
+## Supported Conversion Data
+
+TrackPlay captures comprehensive conversion information:
+
+### Basic Conversion Fields
+- **Conversion ID**: Unique identifier from the payment processor
+- **Conversion Value**: Purchase amount
+- **Conversion Currency**: Currency code (USD, EUR, etc.)
+- **Conversion Type**: Sale, refund, chargeback, etc.
+
+### Customer Information
+- **Customer Name**: Buyer's name (when available)
+- **Product Code**: SKU or product identifier
+- **Product Name**: Product title or description
+
+### Tracking Context
+- **Session Code**: Links conversion to video session
+- **Workspace Code**: Identifies your TrackPlay workspace
+- **Video Code**: Specific video that drove the conversion
+- **Page URL**: Where the conversion originated
+- **Referrer Information**: Traffic source data
+
+### Technical Data
+- **IP Address**: Visitor's IP for geolocation
+- **User Agent**: Browser and device information
+- **Device Type**: Mobile, desktop, tablet
+- **Browser**: Chrome, Safari, Firefox, etc.
+- **Operating System**: Windows, macOS, iOS, Android
+- **Country Code**: Geolocation data
+
+## Conversion Types Explained
+
+### Sales
+- Initial purchase transactions
+- Marked as primary conversion events
+- Used for revenue attribution
+
+### Refunds
+- Customer refund requests
+- Negative impact on conversion metrics
+- Important for ROI calculations
+
+### Chargebacks
+- Disputed transactions
+- Bank or credit card reversals
+- Tracked separately from refunds
+
+## Advanced Tracking Features
+
+### Multi-Parameter Support
+- Some platforms support multiple tracking parameters
+- TrackPlay can inject session IDs into multiple fields simultaneously
+- Useful for complex affiliate setups
+
+### Cross-Domain Tracking
+- Session data persists across domain boundaries
+- Important for multi-step checkout processes
+- Maintains attribution accuracy
+
+### ElasticFunnels Enhancement
+- When ElasticFunnels is active, tracking parameters are enhanced
+- Cross-platform parameter injection
+- Unified tracking across multiple payment processors
+
+## Optimization Best Practices
+
+### 1. Link Placement
+- Place purchase links on the same page as your TrackPlay video
+- Ensure links are visible when the video player loads
+- Avoid loading purchase links after significant delays
+
+### 2. URL Structure
+- Use standard payment processor URLs
+- Ensure URLs contain the expected domain patterns:
+  - Clickbank: "clickbank.net"
+  - Buygoods: "buygoods.com"
+- Avoid URL redirects that might break tracking
+
+### 3. Integration Configuration
+- Choose tracking parameters that don't conflict with your existing campaigns
+- Test with small transactions before full deployment
+- Monitor integration status regularly
+
+### 4. Page Performance
+- Ensure TrackPlay videos load quickly
+- Minimize JavaScript conflicts
+- Test on mobile devices and different browsers
+
+## Troubleshooting Conversion Tracking
+
+### No Conversions Showing
+
+**Check Integration Status**
+- Verify integration shows "Ready to use"
+- Ensure all required parameters are configured
+- Confirm postback URLs are set in payment processor
+
+**Verify Link Detection**
+- Check that purchase links are present on the page
+- Ensure links contain the correct domain patterns
+- Test with browser developer tools to see if URLs are modified
+
+**Test Purchase Flow**
+- Make a test purchase to verify end-to-end tracking
+- Check that tracking parameters appear in the checkout URL
+- Verify payment processor receives tracking data
+
+### Partial Conversion Data
+
+**Missing Customer Information**
+- Some payment processors limit customer data sharing
+- Check privacy settings in your payment processor account
+- Verify postback URL configuration includes all data fields
+
+**Incomplete Technical Data**
+- Ensure JavaScript is enabled for visitors
+- Check for browser compatibility issues
+- Verify TrackPlay video player loads completely
+
+### Attribution Issues
+
+**Wrong Video Attribution**
+- Check that each video has a unique video code
+- Verify videos are properly configured in TrackPlay
+- Ensure session tracking isn't being shared across videos
+
+**Cross-Domain Problems**
+- Review your domain configuration
+- Check for third-party cookies blocking
+- Test checkout flow across all domains
+
+## Testing Your Setup
+
+### 1. Visual Verification
+- Load your page with TrackPlay video
+- Right-click purchase links and "Inspect Element"
+- Verify URLs now contain TrackPlay session parameters
+
+### 2. Network Monitoring
+- Use browser developer tools
+- Check Network tab for TrackPlay requests
+- Verify tracking parameters are being sent
+
+### 3. Test Transactions
+- Process small test purchases
+- Check TrackPlay analytics for conversion data
+- Verify data accuracy in payment processor
+
+### 4. Cross-Browser Testing
+- Test on different browsers and devices
+- Verify tracking works on mobile
+- Check for JavaScript compatibility issues
+
+## Privacy and Compliance
+
+### Data Collection
+- TrackPlay only collects data necessary for conversion attribution
+- No personally identifiable information is stored unnecessarily
+- All data transmission uses secure HTTPS connections
+
+### Payment Processor Integration
+- All conversion data comes directly from payment processors
+- TrackPlay doesn't store sensitive payment information
+- Integration follows PCI compliance standards
+
+## Support and Resources
+
+For additional help with conversion tracking:
+- Check the specific integration guides for your payment processor
+- Use TrackPlay's built-in analytics to monitor tracking performance
+- Contact support for complex tracking scenarios or custom implementations

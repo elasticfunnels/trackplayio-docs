@@ -1,0 +1,79 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "TrackPlay Player Documentation",
+  "colors": {
+    "primary": "#c03f24",
+    "light": "#c03f24",
+    "dark": "#c03f24"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "index",
+              "get-started/quick-start",
+              "get-started/overview"
+            ]
+          },
+          {
+            "group": "Integration",
+            "pages": [
+              "integration/configuration",
+              "integration/buygoods",
+              "integration/clickbank",
+              "integration/elasticfunnels",
+              "integration/conversion-tracking",
+              "integration/analytics"
+            ]
+          },
+          {
+            "group": "Events Reference",
+            "pages": [
+              "events/video-events",
+              "events/timed-events",
+              "events/user-events",
+              "events/pixel-events"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/player-options",
+              "configuration/domain-whitelist"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Email Support",
+          "href": "mailto:support@trackplay.io",
+          "icon": "envelope"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "https://storage.googleapis.com/elasticfunnels/89/media/logo.png",
+    "dark": "https://storage.googleapis.com/elasticfunnels/89/media/logo.png"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.trackplay.io"
+    }
+  },
+  "footer": {
+    "socials": {
+    }
+  }
+}

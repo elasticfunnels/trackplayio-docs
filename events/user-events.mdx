@@ -1,0 +1,131 @@
+---
+title: "User Events"
+description: "Reference for user interface interaction events"
+---
+
+Events that fire when users interact with the video player interface.
+
+<Note>
+Need to integrate events? See the [Quick Start Guide](/get-started/quick-start) for the basic integration pattern.
+</Note>
+
+## Interface Events
+
+### `interact`
+Fired when the user first interacts with the player.
+
+**Data:**
+```javascript
+{
+  time: 5.2,           // Current playback time
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('interact', function (event) {
+  console.log('User first interacted at', event.detail.time);
+});
+```
+
+**When it fires:**
+- User first clicks on the player overlay
+- Marks the beginning of user engagement
+
+### `enter-fullscreen`
+Fired when the video enters fullscreen mode.
+
+**Data:**
+```javascript
+{
+  time: 67.8,          // Current playback time
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('enter-fullscreen', function (event) {
+  console.log('Entered fullscreen at', event.detail.time);
+  // Hide elements that shouldn't show in fullscreen
+  document.querySelectorAll('.hide-on-fullscreen').forEach(el => {
+    el.style.display = 'none';
+  });
+});
+```
+
+**When it fires:**
+- User clicks the fullscreen button
+- Player programmatically enters fullscreen
+- Browser fullscreen API is activated
+
+### `exit-fullscreen`
+Fired when the video exits fullscreen mode.
+
+**Data:**
+```javascript
+{
+  time: 89.1,          // Current playback time
+  session_id: "abc123" // Device/session identifier
+}
+```
+
+```javascript
+player.on('exit-fullscreen', function (event) {
+  console.log('Exited fullscreen at', event.detail.time);
+  // Restore hidden elements
+  document.querySelectorAll('.hide-on-fullscreen').forEach(el => {
+    el.style.removeProperty('display');
+  });
+});
+```
+
+**When it fires:**
+- User clicks the exit fullscreen button
+- User presses Escape key
+- Player programmatically exits fullscreen
+- Browser fullscreen API is deactivated
+
+## Complete Integration Example
+
+```javascript
+document.addEventListener('TrackPlayReady', function (e) {
+  let player = e.detail.player;
+  
+  // Listen to user interaction events
+  player.on('interact', function (event) {
+    console.log('User first interacted at', event.detail.time);
+  });
+  
+  player.on('enter-fullscreen', function (event) {
+    console.log('Entered fullscreen at', event.detail.time);
+    document.body.classList.add('fullscreen-mode');
+  });
+  
+  player.on('exit-fullscreen', function (event) {
+    console.log('Exited fullscreen at', event.detail.time);
+    document.body.classList.remove('fullscreen-mode');
+  });
+});
+```
+
+
+
+## Data Structure
+
+All user events include these standard fields:
+
+- **`time`**: Current video playback time in seconds
+- **`session_id`**: Unique device/session identifier
+
+## Related Events
+
+- **[Video Events](/events/video-events)** - Core playback events
+- **[Timed Events](/events/timed-events)** - Custom events at specific times
+- **[Pixel Events](/events/pixel-events)** - Conversion tracking events
+
+## Configuration
+
+To enable these events, configure the following in your TrackPlay dashboard:
+
+- **Fullscreen**: Enable fullscreen button in controls
+- **User Interaction**: These events fire automatically when users interact with the player
