@@ -45,6 +45,7 @@
             "group": "Configuration",
             "pages": [
               "configuration/player-options",
+              "configuration/dynamic-options",
               "configuration/domain-whitelist"
             ]
           }

@@ -1,0 +1,570 @@
+---
+title: "Dynamic Options Manager"
+description: "Runtime configuration changes for TrackPlay video player using the OptionsManager plugin"
+---
+
+The OptionsManager plugin allows you to dynamically modify player configuration after initialization, providing powerful runtime customization capabilities without requiring player reload.
+
+<Note>
+The OptionsManager is available in TrackPlay player version 6.0+ and is automatically initialized with every player instance.
+</Note>
+
+## Overview
+
+The OptionsManager provides a clean API for modifying player options using dot notation paths, making it easy to change nested configuration values and immediately apply them to running player instances.
+
+### Key Features
+
+- **Dot Notation Access** - Use simple paths like `'style_options.main_color'`
+- **Batch Operations** - Change multiple options efficiently in one call
+- **Automatic Application** - Changes are immediately applied to player components
+- **Extensible Handlers** - Register custom handlers for new option types
+- **Event Notifications** - Listen for option change events
+- **Type Safety** - Built-in validation and error handling
+
+## Basic Usage
+
+### Setting Single Options
+
+```javascript
+document.addEventListener('TrackPlayReady', function (e) {
+    let player = e.detail.player;
+    
+    // Change video time display color
+    player.setOption('style_options.main_color', '#ff0000');
+    
+    // Toggle autoplay
+    player.setOption('autoplay_options.autoplay', false);
+    
+    // Enable classic progress bar
+    player.setOption('style_options.classic_progress_bar', true);
+    
+    // Set autoplay timing
+    player.setOption('autoplay_options.time', '00:05:00');
+});
+```
+
+<Note>
+Options can be set immediately when `TrackPlayReady` fires. If the OptionsManager isn't ready yet, options are automatically queued and applied after player initialization completes, ensuring user settings always take precedence over default options.
+</Note>
+
+### Batch Option Changes
+
+For multiple changes, use `setMultipleOptions()` for better performance:
+
+```javascript
+player.setMultipleOptions({
+    'style_options.main_color': '#00ff00',
+    'style_options.corner_play_button': false,
+    'autoplay_options.autoplay': true,
+    'autoplay_options.time': '00:03:00'
+});
+```
+
+### Getting Current Values
+
+```javascript
+// Get current values
+const currentColor = player.getOption('style_options.main_color');
+const isAutoplay = player.getOption('autoplay_options.autoplay');
+const template = player.getOption('style_options.controls_template');
+
+console.log('Current settings:', {
+    color: currentColor,
+    autoplay: isAutoplay,
+    template: template
+});
+```
+
+## Supported Option Types
+
+### Style Options (`style_options`)
+
+Control visual appearance and UI elements:
+
+```javascript
+// Colors (limited effect)
+player.setOption('style_options.main_color', '#ff6b35'); // Only affects video time display
+
+// Control buttons (show/hide)
+player.setOption('style_options.corner_play_button', true);
+player.setOption('style_options.classic_progress_bar', true);
+player.setOption('style_options.classic_fullscreen_button', true);
+player.setOption('style_options.classic_rewind_button', true);
+player.setOption('style_options.classic_forward_button', true);
+player.setOption('style_options.classic_video_time', true);
+player.setOption('style_options.settings_button', true);
+
+// Fullscreen behavior
+player.setOption('style_options.play_in_fullscreen', false);
+player.setOption('style_options.fullscreen_video_element_desktop', false); // Container fullscreen on desktop
+player.setOption('style_options.fullscreen_video_element_mobile', true);   // Video element with browser controls fullscreen on mobile
+```
+
+### Autoplay Options (`autoplay_options`)
+
+Configure automatic playback behavior:
+
+```javascript
+// Basic autoplay control
+player.setOption('autoplay_options.autoplay', true);
+player.setOption('autoplay_options.time', '00:05:00');
+
+// Custom autoplay video (if configured)
+player.setOption('autoplay_options.video', videoObject);
+```
+
+### Progress Options (`progress_options`)
+
+Configure progress bar behavior:
+
+```javascript
+// Progress bar styling
+player.setOption('progress_options.background_color', '#333333');
+player.setOption('progress_options.bar_color', '#ff0000');
+player.setOption('progress_options.height', 4);
+
+// Duration display
+player.setOption('progress_options.duration', true);
+```
+
+### Playback Options (`playback_options`)
+
+Control video playback behavior:
+
+```javascript
+// Volume and audio
+player.setOption('playback_options.volume', 0.8);        // Volume level (0-1)
+player.setOption('playback_options.muted', false);       // Mute/unmute video
+player.setOption('playback_options.playback_rate', 1.75); // Playback speed (0.25-4.0)
+```
+
+### Continue Watching Options (`continue_watching_options`)
+
+Control continue watching functionality:
+
+```javascript
+// Continue watching behavior
+player.setOption('continue_watching_options.enabled', true);
+player.setOption('continue_watching_options.minimum_watch_time', 30);
+```
+
+### Captions Options (`captions_options`)
+
+Configure subtitle/captions display:
+
+```javascript
+// Caption functionality
+player.setOption('captions_options.enabled', true);
+player.setOption('captions_options.language', 'en');
+player.setOption('captions_options.font_size', '16px');
+```
+
+### Smart Orientation Options (`smart_orientation_options`)
+
+Handle video orientation detection:
+
+```javascript
+// Orientation handling
+player.setOption('smart_orientation_options.enabled', true);
+player.setOption('smart_orientation_options.auto_switch', true);
+```
+
+### Turbo Options (`turbo_options`)
+
+Control turbo/speed functionality:
+
+```javascript
+// Turbo settings
+player.setOption('turbo_options.enabled', true);
+player.setOption('turbo_options.speeds', [1, 1.25, 1.5, 2]);
+player.setOption('turbo_options.default_speed', 1);
+```
+
+### Paused Options (`paused_options`)
+
+Control paused state behavior:
+
+```javascript
+// Paused overlay settings
+player.setOption('paused_options.show_overlay', true);
+player.setOption('paused_options.custom_content', 'Custom paused message');
+```
+
+### Thumbnail Options (`thumbnail_options`)
+
+Configure thumbnail display:
+
+```javascript
+// Thumbnail settings
+player.setOption('thumbnail_options.enabled', true);
+player.setOption('thumbnail_options.landscape_image', 'https://example.com/thumb.jpg');
+player.setOption('thumbnail_options.portrait_image', 'https://example.com/thumb-portrait.jpg');
+```
+
+### Timed Events Options (`timed_events_options`)
+
+Configure time-based events:
+
+```javascript
+// Individual timed events with time and event data
+// These are arrays of event objects configured via dashboard
+```
+
+### Pixels Options (`pixels_options`)
+
+Configure conversion tracking pixels:
+
+```javascript
+// Individual pixel events with time and pixel data
+// These are arrays of pixel objects configured via dashboard
+```
+
+### Security Options (`security_options`)
+
+Configure player security features:
+
+```javascript
+// Security settings
+player.setOption('security_options.use_shadow_dom', true);
+player.setOption('security_options.use_blob_urls', false);
+player.setOption('security_options.detect_devtools', true);
+player.setOption('security_options.prevent_extensions', true);
+player.setOption('security_options.obfuscate_urls', true);
+```
+
+## Advanced Usage
+
+### Event Listening
+
+Listen for option changes to trigger custom behavior:
+
+```javascript
+player.on('option-changed', (event) => {
+    const { path, value, oldValue } = event.detail;
+    
+    console.log(`Option ${path} changed from ${oldValue} to ${value}`);
+    
+    // React to specific changes
+    if (path === 'style_options.main_color') {
+        updateExternalUI(value);
+    }
+});
+```
+
+### Custom Option Handlers
+
+Register handlers for custom option types if you need to extend the player:
+
+```javascript
+// Register a custom handler for your own option namespace
+player.registerOptionHandler('custom_options', (path, value, oldValue) => {
+    console.log(`Custom option ${path} changed:`, { value, oldValue });
+    
+    // Handle your custom logic
+    if (path === 'custom_options.theme_mode') {
+        updatePageTheme(value);
+    }
+});
+
+// Use your custom options
+player.setOption('custom_options.theme_mode', 'dark');
+player.setOption('custom_options.analytics_enabled', true);
+```
+
+### Conditional Updates
+
+Apply options based on conditions:
+
+```javascript
+// Update based on screen size
+function updateForScreenSize() {
+    const isMobile = window.innerWidth < 768;
+    
+    player.setMultipleOptions({
+        'style_options.controls_template': isMobile ? 'template-1' : 'template-2',
+        'autoplay_options.autoplay': !isMobile, // Disable autoplay on mobile
+        'style_options.classic_progress_bar': isMobile
+    });
+}
+
+// Update on resize
+window.addEventListener('resize', updateForScreenSize);
+updateForScreenSize(); // Initial call
+```
+
+### Time-Based Updates
+
+Change options at specific times:
+
+```javascript
+// Update options during video playback
+player.on('timeupdate', () => {
+    const currentTime = player.videoElement.currentTime;
+    
+    // Change colors at 30 seconds
+    if (currentTime > 30 && !colorChanged) {
+        player.setOption('style_options.main_color', '#ff0000');
+        colorChanged = true;
+    }
+    
+    // Enable turbo mode at 1 minute
+    if (currentTime > 60 && !turboEnabled) {
+        player.setOption('turbo_options.enabled', true);
+        turboEnabled = true;
+    }
+});
+```
+
+## API Reference
+
+### Methods
+
+#### `setOption(path, value, apply = true)`
+
+Set a single option using dot notation.
+
+**Parameters:**
+- `path` (string) - Dot notation path to the option
+- `value` (any) - New value to set
+- `apply` (boolean) - Whether to immediately apply changes
+
+**Returns:** `boolean` - Success status
+
+**Example:**
+```javascript
+const success = player.setOption('style_options.main_color', '#ff0000');
+```
+
+#### `setMultipleOptions(options, apply = true)`
+
+Set multiple options at once for better performance.
+
+**Parameters:**
+- `options` (object) - Object with paths as keys and values
+- `apply` (boolean) - Whether to immediately apply changes
+
+**Returns:** `boolean` - Success status
+
+**Example:**
+```javascript
+const success = player.setMultipleOptions({
+    'style_options.main_color': '#ff0000',
+    'autoplay_options.autoplay': true
+});
+```
+
+#### `getOption(path)`
+
+Get the current value of an option.
+
+**Parameters:**
+- `path` (string) - Dot notation path to the option
+
+**Returns:** `any` - Current option value
+
+**Example:**
+```javascript
+const color = player.getOption('style_options.main_color');
+```
+
+#### `registerOptionHandler(type, handler)`
+
+Register a custom handler for specific option types.
+
+**Parameters:**
+- `type` (string) - Root option type (must not conflict with existing types)
+- `handler` (function) - Handler function `(path, value, oldValue) => void`
+
+**Returns:** `boolean` - Success status
+
+**Example:**
+```javascript
+player.registerOptionHandler('custom_options', (path, value, oldValue) => {
+    console.log('Custom option changed:', { path, value, oldValue });
+});
+```
+
+<Note>
+Avoid using existing option type names like `style_options`, `autoplay_options`, etc. Use your own namespace like `custom_options` or `my_app_options`.
+</Note>
+
+### Events
+
+#### `option-changed`
+
+Fired when any option is changed via the OptionsManager.
+
+**Event Data:**
+```javascript
+{
+    path: string,      // The option path that changed
+    value: any,        // New value
+    oldValue: any,     // Previous value
+    applied: boolean   // Whether the change was applied immediately
+}
+```
+
+## Common Use Cases
+
+### A/B Testing
+
+```javascript
+// Randomly assign variant
+const variant = Math.random() > 0.5 ? 'A' : 'B';
+
+if (variant === 'A') {
+    player.setMultipleOptions({
+        'style_options.main_color': '#ff0000',
+        'style_options.controls_template': 'template-1'
+    });
+} else {
+    player.setMultipleOptions({
+        'style_options.main_color': '#0000ff',
+        'style_options.classic_progress_bar': true
+    });
+}
+
+// Track the variant
+analytics.track('player_variant_assigned', { variant });
+```
+
+### User Preferences
+
+```javascript
+// Load user preferences from localStorage
+const preferences = JSON.parse(localStorage.getItem('playerPreferences') || '{}');
+
+// Apply saved preferences
+if (preferences.volume !== undefined) {
+    player.setOption('playback_options.volume', preferences.volume);
+}
+
+if (preferences.autoplay !== undefined) {
+    player.setOption('autoplay_options.autoplay', preferences.autoplay);
+}
+
+// Save preferences when changed
+player.on('option-changed', (event) => {
+    const { path, value } = event.detail;
+    
+    if (path.startsWith('playback_options.') || path.startsWith('autoplay_options.')) {
+        preferences[path] = value;
+        localStorage.setItem('playerPreferences', JSON.stringify(preferences));
+    }
+});
+```
+
+### Fullscreen Configuration
+
+Configure different fullscreen behaviors for desktop and mobile:
+
+```javascript
+// Desktop: Use container fullscreen, Mobile: Use video element fullscreen
+const options = {
+    style_options: {
+        fullscreen_video_element_desktop: false, // Container fullscreen on desktop
+        fullscreen_video_element_mobile: true,   // Video element fullscreen on mobile
+        classic_fullscreen_button: true          // Show fullscreen button
+    }
+};
+
+// Apply the configuration
+player.setMultipleOptions(options.style_options);
+
+// Or set individually
+player.setOption('style_options.fullscreen_video_element_desktop', false);
+player.setOption('style_options.fullscreen_video_element_mobile', true);
+player.setOption('style_options.classic_fullscreen_button', true);
+```
+
+## Best Practices
+
+### Option Precedence
+
+User-set options always take precedence over player defaults:
+
+```javascript
+// This user setting will override any default corner_play_button setting
+player.setOption('style_options.corner_play_button', false);
+
+// Even if set immediately when TrackPlayReady fires, it will override defaults
+document.addEventListener('TrackPlayReady', function (e) {
+    let player = e.detail.player;
+    
+    // This overrides the default value from the dashboard
+    player.setOption('style_options.main_color', '#custom');
+});
+```
+
+### Performance
+
+- Use `setMultipleOptions()` for batch changes instead of multiple `setOption()` calls
+- Set `apply: false` when making multiple sequential changes, then apply manually
+- Avoid frequent option changes during video playback
+
+### Error Handling
+
+```javascript
+// Always check return values
+const success = player.setOption('style_options.main_color', '#ff0000');
+if (!success) {
+    console.error('Failed to set option');
+}
+
+// Handle invalid paths gracefully
+try {
+    player.setOption('invalid.path.here', 'value');
+} catch (error) {
+    console.error('Option setting failed:', error);
+}
+```
+
+### Type Safety
+
+```javascript
+// Validate values before setting
+function setMainColor(color) {
+    if (typeof color === 'string' && /^#[0-9A-F]{6}$/i.test(color)) {
+        player.setOption('style_options.main_color', color);
+    } else {
+        console.error('Invalid color format:', color);
+    }
+}
+```
+
+<Warning>
+Dynamic option changes are applied immediately to the running player. Some changes may cause visual flicker or interruption of user experience. Test thoroughly in your specific use case.
+</Warning>
+
+## Troubleshooting
+
+### Common Issues
+
+**Option not applying:**
+- Verify the option path is correct
+- Check if the component supports dynamic updates
+- Ensure the OptionsManager is initialized
+
+**Performance issues:**
+- Use batch operations for multiple changes
+- Avoid rapid sequential option changes
+- Consider debouncing frequent updates
+
+**Memory leaks:**
+- Always clean up event listeners
+- Remove custom handlers when no longer needed
+- Call `player.destroy()` when removing player
+
+### Debug Mode
+
+Enable debug logging to see option changes:
+
+```javascript
+// Enable debug mode
+window.trackplay_debug = true;
+
+// All option changes will be logged to console
+player.setOption('style_options.main_color', '#ff0000');
+// Console: 🔧 OptionsManager: Set style_options.main_color { oldValue: "#000000", newValue: "#ff0000", willApply: true }
+```
