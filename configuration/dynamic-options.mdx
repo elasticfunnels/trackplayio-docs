@@ -220,6 +220,19 @@ Configure conversion tracking pixels:
 // These are arrays of pixel objects configured via dashboard
 ```
 
+### Security Options (`security_options`)
+
+Configure player security features:
+
+```javascript
+// Security settings
+player.setOption('security_options.use_shadow_dom', true);
+player.setOption('security_options.use_blob_urls', false);
+player.setOption('security_options.detect_devtools', true);
+player.setOption('security_options.prevent_extensions', true);
+player.setOption('security_options.obfuscate_urls', true);
+```
+
 ## Advanced Usage
 
 ### Event Listening
@@ -286,8 +299,8 @@ Change options at specific times:
 
 ```javascript
 // Update options during video playback
-player.on('timeupdate', () => {
-    const currentTime = player.videoElement.currentTime;
+player.on('time', (event) => {
+    const currentTime = event.detail.time;
     
     // Change colors at 30 seconds
     if (currentTime > 30 && !colorChanged) {
